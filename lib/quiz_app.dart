@@ -24,30 +24,35 @@ class _QuizAppState extends State<QuizApp> {
   Submission? submission;
 
   void startQuiz() {
+    submission = Submission(answers: []);
+
     setState(() {
       currentState = QuizState.started;
-      submission = Submission(answers: []);
     });
   }
 
   void onTap(String choice) {
-    setState(() {
-      submission!.answers.add(Answer(
-          question: widget.quiz.questions[currentQuestionIndex],
-          questionAnswer: choice));
-      if (currentQuestionIndex < widget.quiz.questions.length - 1) {
+    submission!.answers.add(Answer(
+        question: widget.quiz.questions[currentQuestionIndex],
+        questionAnswer: choice));
+
+    if (currentQuestionIndex < widget.quiz.questions.length - 1) {
+      setState(() {
         currentQuestionIndex++;
-      } else {
+      });
+    } else {
+      setState(() {
         currentState = QuizState.finished;
-      }
-    });
+      });
+    }
   }
 
   void restart() {
+    currentQuestionIndex = 0;
+    submission!.answers.clear();
+
     setState(() {
-      currentState = QuizState.started;
-      currentQuestionIndex = 0;
-      submission!.answers.clear();
+      currentState = QuizState.notStard;
     });
   }
 
@@ -59,13 +64,18 @@ class _QuizAppState extends State<QuizApp> {
         backgroundColor: appColor,
         body: Center(
           child: switch (currentState) {
-            QuizState.notStard =>
-              WelcomeScreen(startQuiz: startQuiz, quizName: widget.quiz.title),
+            QuizState.notStard => WelcomeScreen(
+                startQuiz: startQuiz,
+                quizName: widget.quiz.title,
+              ),
             QuizState.started => QuestionScreen(
                 questions: widget.quiz.questions,
                 questionIndex: currentQuestionIndex,
                 onTap: onTap),
-            QuizState.finished => ResultScreen(quiz: widget.quiz, submission: submission!, restartQuiz: restart)
+            QuizState.finished => ResultScreen(
+                quiz: widget.quiz,
+                submission: submission!,
+                restartQuiz: restart)
           },
         ),
       ),

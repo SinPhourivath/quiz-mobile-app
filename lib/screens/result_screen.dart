@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/model/quiz.dart';
 import 'package:quiz_app/model/submission.dart';
+import 'package:quiz_app/widgets/app_button.dart';
 
 class ResultScreen extends StatelessWidget {
   const ResultScreen(
@@ -33,14 +34,20 @@ class ResultScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ...answer.question.possibleAnswers.map(
-                            (eachPossibleAnswer) =>
-                                Text(eachPossibleAnswer, style: TextStyle()))
+                          (eachPossibleAnswer) {
+                            return Text(
+                              eachPossibleAnswer,
+                            );
+                          },
+                        )
                       ],
-                    )
+                    ),
                   ],
                 ))
           ],
-        )
+        ),
+        SizedBox(height: 20),
+        AppButton("Restart quiz?", onTap: restartQuiz)
       ],
     );
   }
